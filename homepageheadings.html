@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sliding Headings</title>
+  <!-- Import Roboto Bold -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      overflow: hidden;
+      background-color: white;
+    }
+
+    h1 {
+      position: absolute;
+      right: -100%;             /* Start off-screen */
+      transition: right 1s ease; /* Slide effect */
+      font-size: 18px;           /* 18px */
+      font-weight: 900;          /* Roboto Black */
+      color: black;              /* Font-black */
+      text-align: center;
+    }
+
+    h1.active {
+      right: 50%;                /* Slide to center */
+      transform: translateX(50%);
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="heading1">Build an Operating System for Your Work</h1>
+  <h1 id="heading2">For the Operator Who Has Tried Everything Else</h1>
+  <h1 id="heading3">Let This System Run Your Work</h1>
+
+  <script>
+    const headings = [
+      document.getElementById('heading1'),
+      document.getElementById('heading2'),
+      document.getElementById('heading3')
+    ];
+
+    let current = 0;
+
+    function showNextHeading() {
+      headings.forEach(h => h.classList.remove('active'));
+      headings[current].classList.add('active');
+      current = (current + 1) % headings.length;
+    }
+
+    showNextHeading();               // Show first heading immediately
+    setInterval(showNextHeading, 3000); // Switch every 3 seconds
+  </script>
+
+</body>
+</html>
