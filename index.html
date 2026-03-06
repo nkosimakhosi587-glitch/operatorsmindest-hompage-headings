@@ -1,146 +1,62 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>centered slide · pause · loop</title>
-  <!-- Roboto Bold 18px, black – clean sequence for Google Sites -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Sliding Headings</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* minimal reset – only what's needed */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* body ensures full width and hides off-screen overflow */
     body {
-      overflow-x: hidden; /* prevents horizontal scroll while text slides off */
-      background: transparent; /* let Google Sites background show */
-      min-height: 100px; /* just enough to see the heading */
       display: flex;
-      align-items: center; /* vertical centering (optional, for comfort) */
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #fff;
       margin: 0;
-      padding: 0;
-    }
-
-    /* container holds the three headings stacked absolutely, all centered */
-    .heading-sequencer {
-      position: relative;
-      width: 100%;
-      height: 4em; /* enough for three lines (≈72px) */
       font-family: 'Roboto', sans-serif;
-      font-weight: 700; /* Roboto Bold */
-      font-size: 18px;
-      color: #000000; /* pure black */
-      line-height: 1.4;
-      margin: 0 auto; /* centered within parent */
     }
 
-    /* each heading – absolutely positioned, always centered (left + translate) */
-    .heading-sequencer p {
+    .slider {
+      position: relative;
+      width: 600px;
+      height: 30px;
+      overflow: hidden;
+    }
+
+    .slide {
       position: absolute;
-      left: 50%;
-      top: 0;
-      margin: 0;
-      padding: 0;
-      width: 100%; /* take full width of container */
-      text-align: center; /* text is centered within its own block */
-      white-space: nowrap; /* keep each headline on one line */
-      transform: translateX(-50%); /* true centering (based on element width) */
-      opacity: 0; · hidden by default, animation reveals */
-      animation: slidePauseLoop 12s linear infinite;
-      /* individual delays set below */
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+      opacity: 0;
+      animation: slideAnimation 12s ease-in-out infinite;
     }
 
-    /* delay for each heading to create sequential order:
-       heading 1: starts at 0s (first 4s)
-       heading 2: starts at 4s (next 4s)
-       heading 3: starts at 8s (last 4s)
-    */
-    .heading-sequencer p:nth-child(1) {
+    .slide:nth-child(1) {
       animation-delay: 0s;
     }
-    .heading-sequencer p:nth-child(2) {
+    .slide:nth-child(2) {
       animation-delay: 4s;
     }
-    .heading-sequencer p:nth-child(3) {
+    .slide:nth-child(3) {
       animation-delay: 8s;
     }
 
-    /* keyframes for a complete 12s cycle (3 headings * 4s each)
-       0% – 33.33% → first heading visible (4s window)
-       33.33% – 66.66% → second heading visible
-       66.66% – 100% → third heading visible
-
-       Within each 4s window:
-       - 0.5s slide in from left to center
-       - 3.0s hold at center
-       - 0.5s slide out from center to right
-    */
-    @keyframes slidePauseLoop {
-      /* --- active segment for heading 1 (0% – 33.33%) --- */
-      0% {
-        transform: translateX(calc(-50% - 100vw)); /* off‑screen left */
-        opacity: 1;
-      }
-      4.166% { /* 0.5s / 12s = 4.166% */
-        transform: translateX(-50%); /* centered */
-        opacity: 1;
-      }
-      29.166% { /* 3.5s / 12s = 29.166% (hold until 3.5s) */
-        transform: translateX(-50%);
-        opacity: 1;
-      }
-      33.333% { /* 4s / 12s = 33.333% – slide out complete */
-        transform: translateX(calc(-50% + 100vw)); /* off‑screen right */
-        opacity: 1;
-      }
-      /* immediately after active segment, hide and reset to center */
-      33.334% {
-        transform: translateX(-50%);
-        opacity: 0;
-      }
-      /* --- the rest of the cycle (other headings) – stay hidden at center --- */
-      100% {
-        transform: translateX(-50%);
-        opacity: 0;
-      }
-    }
-
-    /* optional: fine‑tune for very narrow screens – keep text readable */
-    @media (max-width: 480px) {
-      .heading-sequencer {
-        font-size: 18px; /* stays 18px, but nowrap may cause tiny overflow */
-        /* you could add a smaller font if needed, but we trust Google Sites layout */
-      }
-    }
-
-    /* Google Sites often adds its own paddings – this block adapts */
-    .heading-sequencer p {
-      text-indent: 0; /* no extra indent */
-      letter-spacing: normal;
+    @keyframes slideAnimation {
+      0% { transform: translateX(-100%); opacity: 0; }
+      10% { transform: translateX(0); opacity: 1; }
+      25% { transform: translateX(0); opacity: 1; }
+      35% { transform: translateX(100%); opacity: 0; }
+      100% { transform: translateX(100%); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="heading-sequencer">
-    <p>Building an Operating System for Your Work</p>
-    <p>For the operator who has tried everything else</p>
-    <p>Let this System run your work</p>
+  <div class="slider">
+    <div class="slide">Building an Operating System for Your Work</div>
+    <div class="slide">For the operator who has tried everything else</div>
+    <div class="slide">Let this System run your work</div>
   </div>
-
-  <!-- Behaviour summary:
-       - Each heading appears one after another, exactly in the typed order.
-       - A heading starts off‑screen left, slides to center (0.5s), pauses for 3s,
-         then slides off‑screen right (0.5s). The next heading then repeats.
-       - Total loop: 12 seconds (3 headings × 4s), infinite.
-       - Font: Roboto Bold 18px, black.
-       - Absolutely no JavaScript – pure, clean CSS. Ready to embed.
-  -->
 </body>
 </html>
-
