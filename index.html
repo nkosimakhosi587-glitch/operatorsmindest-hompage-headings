@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Animated Headings</title>
+  <title>Sliding Headings</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -11,66 +11,45 @@
       align-items: center;
       height: 100vh;
       background: #fff;
+      margin: 0;
       font-family: 'Roboto', sans-serif;
     }
 
-    .heading-container {
+    .slider {
       position: relative;
-      width: 80%;
-      height: 50px;
+      width: 600px;
+      height: 30px;
       overflow: hidden;
     }
 
-    .heading {
-      position: absolute;
-      width: 100%;
+    .slide {
+      position: absolute%;
       text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #000;
+      font-size: 18px; /* Ensures text is 18px */
+      font-weight: 700; /* Roboto Bold */
+      color: #000; /* Black text */
       opacity: 0;
-      animation-duration: 8s;
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
+      animation: slideAnimation 12s ease-in-out infinite;
     }
 
-    /* First heading: center → right */
-    .heading:nth-child(1) {
-      animation-name: slideRight;
-    }
+    .slide:nth-child(1) { animation-delay: 0s; }
+    .slide:nth-child(2) { animation-delay: 4s; }
+    .slide:nth-child(3) { animation-delay: 8s; }
 
-    /* Second heading: left → center */
-    .heading:nth-child(2) {
-      animation-name: slideLeft;
-      animation-delay: 8s;
-    }
-
-    /* Third heading: center → right again */
-    .heading:nth-child(3) {
-      animation-name: slideRight;
-      animation-delay: 16s;
-    }
-
-    @keyframes slideRight {
-      0% { transform: translateX(0); opacity: 1; }
-      30% { transform: translateX(50%); opacity: 1; }
-      40% { opacity: 0; }
-      100% { opacity: 0; }
-    }
-
-    @keyframes slideLeft {
-      0% { transform: translateX(-50%); opacity: 0; }
+    @keyframes slideAnimation {
+      0% { transform: translateX(-100%); opacity: 0; }
       10% { transform: translateX(0); opacity: 1; }
-      40% { transform: translateX(0); opacity: 1; }
-      70% { transform: translateX(50%); opacity: 0; }
-      100% { opacity: 0; }
-
+      25% { transform: translateX(0); opacity: 1; } /* Pause for ~3s */
+      35% { transform: translateX(100%); opacity: 0; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
-  <div class="heading-container">
-    <div class="heading">Building an Operating System for Your Work</div>
-    <div class="heading">For the operator who has tried everything else</div>
-    <div class="heading">Let this System run your work</div>
+  <div class="slider">
+    <div class="slide">Building an Operating System for Your Work</div>
+    <div class="slide">For the operator who has tried everything else</div>
+    <div class="slide">Let this System run your work</div>
   </div>
 </body>
 </html>
