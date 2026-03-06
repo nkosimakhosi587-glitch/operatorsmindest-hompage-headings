@@ -3,106 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sliding · operating system for your work</title>
-  <!-- Roboto Bold 18 · black, slide right & reappear left every 3s -->
+  <title>centered slide · pause · loop</title>
+  <!-- Roboto Bold 18px, black – clean sequence for Google Sites -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* reset & base – so the heading sits flush left, no scrollbars */
+    /* minimal reset – only what's needed */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    /* body ensures full width and hides off-screen overflow */
     body {
-      background: #f2f4f6; /* subtle background to see the slide clearly, not required */
-      min-height: 100vh;
+      overflow-x: hidden; /* prevents horizontal scroll while text slides off */
+      background: transparent; /* let Google Sites background show */
+      min-height: 100px; /* just enough to see the heading */
       display: flex;
-      align-items: center; /* vertical centering (optional, keeps it visible) */
-      overflow-x: hidden; /* hides the text while it's off-screen right */
+      align-items: center; /* vertical centering (optional, for comfort) */
       margin: 0;
       padding: 0;
     }
 
-    /* main sliding container – holds the three lines, moves as a single unit */
-    .os-slider {
-      /* block + full width possible, but we reset children so text starts at left edge */
-      display: block;
+    /* container holds the three headings stacked absolutely, all centered */
+    .heading-sequencer {
+      position: relative;
       width: 100%;
+      height: 4em; /* enough for three lines (≈72px) */
       font-family: 'Roboto', sans-serif;
       font-weight: 700; /* Roboto Bold */
       font-size: 18px;
       color: #000000; /* pure black */
-      line-height: 1.4; /* comfortable reading */
+      line-height: 1.4;
+      margin: 0 auto; /* centered within parent */
+    }
 
-      /* remove any default spacing that could push text away from left edge */
+    /* each heading – absolutely positioned, always centered (left + translate) */
+    .heading-sequencer p {
+      position: absolute;
+      left: 50%;
+      top: 0;
       margin: 0;
       padding: 0;
-
-      /* animation: slide right off-screen in 3s, then instantly reappear left */
-      animation: slideOffAndBack 3s linear infinite;
-
-      /* optional subtle background to emphasize the block – remove if you want */
-      background-color: transparent;
+      width: 100%; /* take full width of container */
+      text-align: center; /* text is centered within its own block */
+      white-space: nowrap; /* keep each headline on one line */
+      transform: translateX(-50%); /* true centering (based on element width) */
+      opacity: 0; · hidden by default, animation reveals */
+      animation: slidePauseLoop 12s linear infinite;
+      /* individual delays set below */
     }
 
-    /* each text line – no margins, no padding, so they really start at left:0 */
-    .os-slider p {
-      margin: 0;
-      padding: 0;
-      /* keep block behaviour – each on its own line */
-      width: 100%;
-      white-space: nowrap; /* prevent wrapping inside each line (keeps exact text) */
+    /* delay for each heading to create sequential order:
+       heading 1: starts at 0s (first 4s)
+       heading 2: starts at 4s (next 4s)
+       heading 3: starts at 8s (last 4s)
+    */
+    .heading-sequencer p:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .heading-sequencer p:nth-child(2) {
+      animation-delay: 4s;
+    }
+    .heading-sequencer p:nth-child(3) {
+      animation-delay: 8s;
     }
 
-    /* add tiny breathing space between lines – purely optical, no left offset */
-    .os-slider p + p {
-      margin-top: 0.2em; /* minimal gap between lines, still left aligned */
-    }
+    /* keyframes for a complete 12s cycle (3 headings * 4s each)
+       0% – 33.33% → first heading visible (4s window)
+       33.33% – 66.66% → second heading visible
+       66.66% – 100% → third heading visible
 
-    /* keyframes: from left edge (0) to completely off right (100vw) */
-    @keyframes slideOffAndBack {
+       Within each 4s window:
+       - 0.5s slide in from left to center
+       - 3.0s hold at center
+       - 0.5s slide out from center to right
+    */
+    @keyframes slidePauseLoop {
+      /* --- active segment for heading 1 (0% – 33.33%) --- */
       0% {
-        transform: translateX(0); /* start exactly at left edge */
+        transform: translateX(calc(-50% - 100vw)); /* off‑screen left */
+        opacity: 1;
       }
+      4.166% { /* 0.5s / 12s = 4.166% */
+        transform: translateX(-50%); /* centered */
+        opacity: 1;
+      }
+      29.166% { /* 3.5s / 12s = 29.166% (hold until 3.5s) */
+        transform: translateX(-50%);
+        opacity: 1;
+      }
+      33.333% { /* 4s / 12s = 33.333% – slide out complete */
+        transform: translateX(calc(-50% + 100vw)); /* off‑screen right */
+        opacity: 1;
+      }
+      /* immediately after active segment, hide and reset to center */
+      33.334% {
+        transform: translateX(-50%);
+        opacity: 0;
+      }
+      /* --- the rest of the cycle (other headings) – stay hidden at center --- */
       100% {
-        transform: translateX(100vw); /* move right by full viewport width -> hidden */
+        transform: translateX(-50%);
+        opacity: 0;
       }
     }
 
-    /* small screen fine-tuning: keep text crisp */
-    @media (max-width: 600px) {
-      .os-slider {
-        font-size: 18px; /* still 18px, Roboto Bold */
+    /* optional: fine‑tune for very narrow screens – keep text readable */
+    @media (max-width: 480px) {
+      .heading-sequencer {
+        font-size: 18px; /* stays 18px, but nowrap may cause tiny overflow */
+        /* you could add a smaller font if needed, but we trust Google Sites layout */
       }
     }
 
-    /* (optional) visual touch: light border to see left edge start */
-    /* you can remove this part if you don't need a marker */
-    .os-slider p {
-      border-left: 2px solid rgba(0,0,0,0.1); /* very faint left mark – just to show reset */
-      padding-left: 2px; /* tiny space so the line isn't glued */
+    /* Google Sites often adds its own paddings – this block adapts */
+    .heading-sequencer p {
+      text-indent: 0; /* no extra indent */
+      letter-spacing: normal;
     }
-    /* fix: the border shouldn't affect sliding or left edge */
-    .os-slider p {
-      border-left: none; /* i prefer clean left – remove if you liked the marker */
-    }
-    /* i'll keep it minimal: no border, text flush left */
   </style>
 </head>
 <body>
-  <!-- sliding block: contains the three headline rows -->
-  <div class="os-slider">
+  <div class="heading-sequencer">
     <p>Building an Operating System for Your Work</p>
     <p>For the operator who has tried everything else</p>
     <p>Let this System run your work</p>
   </div>
 
-  <!-- note: the text slides from left edge to right off-screen in exactly 3 seconds,
-       then instantly reappears on the left side (transform resets to 0) and repeats.
-       Font is Roboto bold 18px, black, as requested. No external javascript, pure CSS. -->
+  <!-- Behaviour summary:
+       - Each heading appears one after another, exactly in the typed order.
+       - A heading starts off‑screen left, slides to center (0.5s), pauses for 3s,
+         then slides off‑screen right (0.5s). The next heading then repeats.
+       - Total loop: 12 seconds (3 headings × 4s), infinite.
+       - Font: Roboto Bold 18px, black.
+       - Absolutely no JavaScript – pure, clean CSS. Ready to embed.
+  -->
 </body>
 </html>
 
