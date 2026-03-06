@@ -2,53 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sliding Headings</title>
-  <!-- Google Fonts: Roboto Bold -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sliding · operating system for your work</title>
+  <!-- Roboto Bold 18 · black, slide right & reappear left every 3s -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
-    body {
+    /* reset & base – so the heading sits flush left, no scrollbars */
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f2f4f6; /* subtle background to see the slide clearly, not required */
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 200px;
-      overflow: hidden;
-      background-color: white;
-      position: relative;
+      align-items: center; /* vertical centering (optional, keeps it visible) */
+      overflow-x: hidden; /* hides the text while it's off-screen right */
+      margin: 0;
+      padding: 0;
     }
 
-    h1 {
-      position: absolute;
-      font-size: 18px;      /* 18px */
-      font-weight: 900;     /* Roboto Black */
-      color: black;
-      text-align: center;
-      opacity: 0;           /* Hidden by default */
+    /* main sliding container – holds the three lines, moves as a single unit */
+    .os-slider {
+      /* block + full width possible, but we reset children so text starts at left edge */
+      display: block;
+      width: 100%;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700; /* Roboto Bold */
+      font-size: 18px;
+      color: #000000; /* pure black */
+      line-height: 1.4; /* comfortable reading */
+
+      /* remove any default spacing that could push text away from left edge */
+      margin: 0;
+      padding: 0;
+
+      /* animation: slide right off-screen in 3s, then instantly reappear left */
+      animation: slideOffAndBack 3s linear infinite;
+
+      /* optional subtle background to emphasize the block – remove if you want */
+      background-color: transparent;
     }
 
-    /* Slide animation */
-    @keyframes slideRightLeft {
-      0% { left: -100%; opacity: 0; }
-      10% { left: 50%; transform: translateX(-50%); opacity: 1; }
-      40% { left: 50%; transform: translateX(-50%); opacity: 1; }
-      50% { left: 110%; opacity: 0; }
-      100% { left: -100%; opacity: 0; }
+    /* each text line – no margins, no padding, so they really start at left:0 */
+    .os-slider p {
+      margin: 0;
+      padding: 0;
+      /* keep block behaviour – each on its own line */
+      width: 100%;
+      white-space: nowrap; /* prevent wrapping inside each line (keeps exact text) */
     }
 
-    /* Each heading gets a delay to loop one after another */
-    #heading1 { animation: slideRightLeft 9s infinite; animation-delay: 0s; }
-    #heading2 { animation: slideRightLeft 9s infinite; animation-delay: 3s; }
-    #heading3 { animation: slideRightLeft 9s infinite; animation-delay: 6s; }
+    /* add tiny breathing space between lines – purely optical, no left offset */
+    .os-slider p + p {
+      margin-top: 0.2em; /* minimal gap between lines, still left aligned */
+    }
 
+    /* keyframes: from left edge (0) to completely off right (100vw) */
+    @keyframes slideOffAndBack {
+      0% {
+        transform: translateX(0); /* start exactly at left edge */
+      }
+      100% {
+        transform: translateX(100vw); /* move right by full viewport width -> hidden */
+      }
+    }
+
+    /* small screen fine-tuning: keep text crisp */
+    @media (max-width: 600px) {
+      .os-slider {
+        font-size: 18px; /* still 18px, Roboto Bold */
+      }
+    }
+
+    /* (optional) visual touch: light border to see left edge start */
+    /* you can remove this part if you don't need a marker */
+    .os-slider p {
+      border-left: 2px solid rgba(0,0,0,0.1); /* very faint left mark – just to show reset */
+      padding-left: 2px; /* tiny space so the line isn't glued */
+    }
+    /* fix: the border shouldn't affect sliding or left edge */
+    .os-slider p {
+      border-left: none; /* i prefer clean left – remove if you liked the marker */
+    }
+    /* i'll keep it minimal: no border, text flush left */
   </style>
 </head>
 <body>
+  <!-- sliding block: contains the three headline rows -->
+  <div class="os-slider">
+    <p>Building an Operating System for Your Work</p>
+    <p>For the operator who has tried everything else</p>
+    <p>Let this System run your work</p>
+  </div>
 
-  <h1 id="heading1">Build an Operating System for Your Work</h1>
-  <h1 id="heading2">For the Operator Who Has Tried Everything Else</h1>
-  <h1 id="heading3">Let This System Run Your Work</h1>
-
+  <!-- note: the text slides from left edge to right off-screen in exactly 3 seconds,
+       then instantly reappears on the left side (transform resets to 0) and repeats.
+       Font is Roboto bold 18px, black, as requested. No external javascript, pure CSS. -->
 </body>
 </html>
+
